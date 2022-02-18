@@ -1,5 +1,4 @@
 import random
-import numpy as np
 
 # 1. Deck
 # ----------------------------------------------------------------------------
@@ -56,6 +55,9 @@ class Player(object):
     def take_card(self, player, deck):
         global card_pool
         global chip_pool
+        global game_end
+        
+        game_end = False
         
         self.card_hand.append(card_pool)
         self.chip_hand += chip_pool
@@ -65,10 +67,13 @@ class Player(object):
         
         chip_pool = 0
         
-        if deck.check_end() != True:
+        if not deck.check_end():
             player.draw_card(deck, player)
+        else:
+            game_end = True
         
     def pass_card(self):
+        
         global card_pool
         global chip_pool
         
@@ -117,28 +122,10 @@ class Player(object):
         return card_points - chip_points
     
     def chip_weight(chip_count):
-        '''
-        # Exponential function Ae^Bx such that chip_weight = 1 when chip_count = 11
-        # and chip_weight = 19 when chip_count = 1.
-        return 25.5 * np.exp((-0.294) * chip_count)
-        '''    
-        '''
-        # Quadratic function ax^2 + bx + c such that chip_weight = 1 when
-        # chip_count = 11, chip_weight = 19 when chip_count = 1 and 
-        # chip_weight = 20 when chip_count = 0.
-        weight = (-4/55) * chip_count**2 + (-51/55) * chip_count + 20
-        if weight > 0:
-            return weight
-        else:
-            return 0
-        '''
-        
-        # return (-0.031) * chip_count**2 + (0.614) * chip_count
-                
+        # Linear function mx + c such that chip_weight = 1 when chip_count = 1
+        # and chip_weight = 3 when chip_count = 11
         return 0.2*chip_count + 0.8
         
-        #return 3
-
     
     def weighted_play(self, player, deck):
         global card_pool
@@ -186,16 +173,17 @@ def Run_Game(player_1, player_2, player_3):
     turn_no = 1
     global card_pool
     global chip_pool 
+    global game_end
     """
     Global used as card_pool and chip_pool need to be updated each turn so
     cannot be reset between function calls.
     """
     card_pool = 0
     chip_pool = 0
-    
+    game_end = False
     Player_1.draw_card(deck, Player_1)
     
-    while deck.check_end() != True:
+    while not game_end:
         turn_no += 1
         
         if turn_no % 3 == 1:
