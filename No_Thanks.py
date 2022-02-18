@@ -57,8 +57,6 @@ class Player(object):
         global chip_pool
         global game_end
         
-        game_end = False
-        
         self.card_hand.append(card_pool)
         self.chip_hand += chip_pool
         
@@ -81,7 +79,7 @@ class Player(object):
         chip_pool += 1
         
         print(f'{self.name} passes the ' + str(card_pool) + " and loses a chip.")
-        # print(f'{self.name} has ' + str(self.chip_hand) + ' chips remaining.')
+        print(f'{self.name} has ' + str(self.chip_hand) + ' chips remaining.')
         
     def rand_play(self, player, deck):
         """
@@ -131,9 +129,6 @@ class Player(object):
         global card_pool
         global chip_pool
         
-        if self.chip_hand <= 0:
-            player.take_card(player, deck)
-        
         take_card_hand = Player.remove_runs(self.card_hand + [card_pool])
         take_chip_hand = self.chip_hand + chip_pool
         pass_card_hand = Player.remove_runs(self.card_hand)
@@ -144,11 +139,14 @@ class Player(object):
         
         # print('take_value is '+str(take_value)+' and pass_value is '+str(pass_value))
         
-        if take_value <= pass_value:
+        
+        if take_value <= pass_value or self.chip_hand <=0:
             player.take_card(player, deck)
             
         else:
             player.pass_card()
+            
+        
         
         
         
