@@ -181,7 +181,19 @@ def Run_Game(player_1, player_2, player_3):
     card_pool = 0
     chip_pool = 0
     game_end = False
-    Player_1.draw_card(deck, Player_1)
+    random_start = True
+    if random_start:
+        turn_no = random.randint(1, 3)
+        if turn_no == 1:
+            Player_1.draw_card(deck, Player_1)
+        elif turn_no == 2:
+            Player_2.draw_card(deck, Player_2)
+        elif turn_no == 3:
+            Player_3.draw_card(deck, Player_3)
+    
+    else:
+        turn_no = 1
+        Player_1.draw_card(deck, Player_1)
     
     while not game_end:
         turn_no += 1
