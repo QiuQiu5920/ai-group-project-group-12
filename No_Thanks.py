@@ -51,7 +51,7 @@ class Player(object):
         card_pool = deck.draw()
         print(f'{self.name} draws the number ' + str(card_pool) + ".")
         
-        player.weighted_play(player, deck)
+        player.rand_play(player, deck)
     
     def take_card(self, player, deck):
         global card_pool
@@ -76,7 +76,7 @@ class Player(object):
         chip_pool += 1
         
         print(f'{self.name} passes the ' + str(card_pool) + " and loses a chip.")
-        print(f'{self.name} has ' + str(self.chip_hand) + ' chips remaining.')
+        # print(f'{self.name} has ' + str(self.chip_hand) + ' chips remaining.')
         
     def rand_play(self, player, deck):
         """
@@ -117,20 +117,34 @@ class Player(object):
         return card_points - chip_points
     
     def chip_weight(chip_count):
-        #return 25.5 * np.exp((-0.294) * chip_count)
-
+        '''
+        # Exponential function Ae^Bx such that chip_weight = 1 when chip_count = 11
+        # and chip_weight = 19 when chip_count = 1.
+        return 25.5 * np.exp((-0.294) * chip_count)
+        '''    
+        '''
+        # Quadratic function ax^2 + bx + c such that chip_weight = 1 when
+        # chip_count = 11, chip_weight = 19 when chip_count = 1 and 
+        # chip_weight = 20 when chip_count = 0.
         weight = (-4/55) * chip_count**2 + (-51/55) * chip_count + 20
         if weight > 0:
             return weight
         else:
             return 0
+        '''
+        
+        return (-0.031) * chip_count**2 + (0.614) * chip_count
+                
+        #return 0.2*chip_count + 0.8
+        
+        #return 3
 
     
     def weighted_play(self, player, deck):
         global card_pool
         global chip_pool
         
-        if self.chip_hand == 0:
+        if self.chip_hand <= 0:
             player.take_card(player, deck)
         
         take_card_hand = Player.remove_runs(self.card_hand + [card_pool])
@@ -141,7 +155,7 @@ class Player(object):
         take_value = sum(take_card_hand) - Player.chip_weight(take_chip_hand) * take_chip_hand
         pass_value = sum(pass_card_hand) - Player.chip_weight(pass_chip_hand) * pass_chip_hand
         
-        print('take_value is '+str(take_value)+' and pass_value is '+str(pass_value))
+        #print('take_value is '+str(take_value)+' and pass_value is '+str(pass_value))
         
         if take_value <= pass_value:
             player.take_card(player, deck)
@@ -185,13 +199,13 @@ def Run_Game(player_1, player_2, player_3):
         turn_no += 1
         
         if turn_no % 3 == 1:
-            Player_1.weighted_play(Player_1, deck)
+            Player_1.rand_play(Player_1, deck)
             
         if turn_no % 3 == 2:
-            Player_2.weighted_play(Player_2, deck)
+            Player_2.rand_play(Player_2, deck)
             
         if turn_no % 3 == 0:
-            Player_3.weighted_play(Player_3, deck)
+            Player_3.rand_play(Player_3, deck)
             
     else:
         P1_total = Player_1.point_tally()
